@@ -1,0 +1,9 @@
+.hero-section {
+  /* The linear-gradient adds a dark, transparent overlay to the background image */
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),
+    url("../images/franco-alva-cXjcd98U4mY-unsplash.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

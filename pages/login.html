@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Hub</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body class="bg-dark hero-section"> 
+
+    <!-- Responsive Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary">
+      <div class="container-fluid px-4">
+        <!-- Brand/Logo Link -->
+        <a class="navbar-brand fw-bold" href="index.html">Student Hub</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <!-- Left-aligned Links -->
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="">Courses</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="">Past Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">Notes</a>
+              </li>
+          </ul>
+
+          <div class="d-flex gap-2">
+            <a href="login.html" class="btn btn-outline-light btn-sm px-3" role="button">Login</a>
+            <a href="signup.html" class="btn btn-light btn-sm px-3" role="button">Sign Up</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    
+    <div class="d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 56px);">
+      
+      <!-- Login Card Container -->
+      <div class="card p-4 shadow-lg text-light bg-secondary" style="width: 100%; max-width: 400px;">
+        <div class="card-body">
+          <h3 class="card-title text-center mb-4">Login</h3>
+          
+          <form>
+            <!-- Email Input -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+            </div>
+            
+            <!-- Password Header -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <label for="password" class="form-label mb-0">Password</label>
+              <!-- Forgot Password Link -->
+              <a href="" class="text-light text-decoration-none small opacity-75 hover-opacity-100">Forgot password?</a>
+            </div>
+            
+            <!-- Password Input -->
+            <div class="mb-4">
+              <input type="password" class="form-control" id="password" required>
+            </div>
+            
+            <!-- Login Button -->
+            <div class="d-grid mb-3">
+              <a href="dashboard.html" class="btn btn-outline-light btn-lg px-4" role="button">
+                Login
+              </a>
+            </div>
+    
+            <!-- Sign Up Link -->
+            <div class="text-center mt-3">
+              <span class="small opacity-75">Don't have an account? </span>
+              <a href="./signup.html" class="text-light text-decoration-underline small">Sign up</a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  </body>
+</html>
