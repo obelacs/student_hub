@@ -24,6 +24,10 @@
           <h3 class="card-title text-center mb-4">Sign Up</h3>
           
           <form action="/signup" method="POST">
+
+            <% if (locals.error) { %>
+              <div style="color: red; margin-bottom: 15px;"><%= error %></div>
+            <% } %>
             <!-- Full Name -->
             <div class="mb-3">
               <label for="name" class="form-label">Full Name</label>

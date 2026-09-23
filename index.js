@@ -25,10 +25,13 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 app.get("/login", (req, res) => {
-  res.render("auth/login");
+  res.render("auth/login", { error: null });
 });
 app.get("/signup", (req, res) => {
-  res.render("auth/signup");
+  res.render("auth/signup", { error: null });
+});
+app.get("/dashboard", (req, res) => {
+  res.render("dashboard");
 });
 
 app.post("/signup", async (req, res) => {
@@ -41,27 +44,70 @@ app.post("/signup", async (req, res) => {
       email,
     ]);
     if (checkResult.rows.length > 0) {
-      return res.redirect("/login");
+      return res.render("auth/signup", {
+        error: "Email already use, log in instead!",
+      });
     } else {
       bcrypt.hash(password, saltRounds, async (err, hash) => {
         if (err) {
-          return res.redirect("/signup")
+          console.err("Error hashing password", err);
+          return res
+            .status(500)
+            .render("auth/signup", { error: "Internal Server Error" });
         } else {
-          await db.query(
-            "INSERT into users(name, email, password) VALUES($1, $2, $3)",
-            [name, email, hash],
-          );
-          console.log("Success!!")
+          if (password.length < 8) {
+            return res.render("auth/signup", {
+              error: "Password should be more than 8 characters",
+            });
+          } else {
+            await db.query(
+              "INSERT into users(name, email, password) VALUES($1, $2, $3)",
+              [name, email, hash],
+            );
+            return res.render("dashboard");
+          }
         }
-        
       });
-    }
-
-    if (password < 8) {
-    } else {
     }
   } catch (error) {
     console.log(error);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  try {
+    const result = await db.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
+    if (result.rows.length > 0) {
+      const user = result.rows[0];
+      const storedHash = user.password;
+
+      bcrypt.compare(password, storedHash, function (err, isMatch) {
+        if (err) {
+          console.error("Error comparing password", err);
+          return res
+            .status(500)
+            .render("auth/login", { error: "Internal server error" });
+        } else {
+          if (isMatch) {
+            res.render("dashboard");
+          } else {
+            return res.render("auth/login", {
+              error: "Incorrect email or password",
+            });
+          }
+        }
+      });
+    } else {
+      return res.render("auth/login", { error: "Incorrect email or password" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).render("login", { error: "Internal server error" });
   }
 });
 
