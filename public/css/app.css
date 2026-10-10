@@ -1,0 +1,18 @@
+.stat-icon {
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border-radius: 10px; background: var(--bs-secondary-bg); font-size: 1.25rem;
+}
+.border-dashed { border-style: dashed; }
+.pre-wrap { white-space: pre-wrap; word-break: break-word; }
+
+/* Cards that behave like links */
+.hover-lift { transition: transform .15s ease, box-shadow .15s ease; }
+.hover-lift:hover { transform: translateY(-2px); box-shadow: var(--bs-box-shadow); }
+
+/* Limit text to N lines */
+.clamp-3 {
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.btn-icon-danger:hover { color: var(--bs-danger) !important; }
+.note-body { max-width: 75ch; line-height: 1.7; }

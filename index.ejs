@@ -1,0 +1,31 @@
+<%- include("../partials/header") %>
+
+<main class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">My courses</h1>
+      <p class="text-body-secondary mb-0"><%= helpers.plural(courses.length, "course") %> this session</p>
+    </div>
+    <a href="/courses/add" class="btn btn-dark"><i class="bi bi-plus-lg me-1"></i>Add course</a>
+  </div>
+
+  <% if (courses.length === 0) { %>
+    <%- include("../partials/empty-state", { empty: {
+      icon: "bi-journal-plus", title: "No courses yet",
+      text: "Create a course or join an existing one to get started.",
+      href: "/courses/add", label: "Add a course" } }) %>
+  <% } else { %>
+    <% ["First", "Second"].forEach(function (sem) {
+         const inSemester = courses.filter(function (c) { return c.semester === sem; });
+         if (!inSemester.length) return; %>
+      <h2 class="h6 text-uppercase text-body-secondary mb-3 mt-4"><%= sem %> semester</h2>
+      <div class="row g-3">
+        <% inSemester.forEach(function (course) { %>
+          <div class="col-md-6 col-lg-4"><%- include("../partials/course-card", { c: course }) %></div>
+        <% }); %>
+      </div>
+    <% }); %>
+  <% } %>
+</main>
+
+<%- include("../partials/footer") %>

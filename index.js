@@ -1,6 +1,9 @@
 import express from "express";
 import pg from "pg";
 import bcrypt from "bcrypt";
+import session from "express-session";
+import passport from "passport";
+import { Strategy } from "passport-local";
 
 const app = express();
 const port = 3000;
@@ -8,6 +11,21 @@ const saltRounds = 10;
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+
+app.use(
+  session({
+    secret: "TOPSECRETWORD",
+    resave: false,
+    saveUninitialized: true,
+  }),
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated();
+  next();
+});
 
 const db = new pg.Client({
   user: "postgres",
@@ -25,13 +43,26 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 app.get("/login", (req, res) => {
+    if (req.isAuthenticated()) {
+      return res.redirect("/dashboard");
+    }
   res.render("auth/login", { error: null });
 });
 app.get("/signup", (req, res) => {
+    if (req.isAuthenticated()) {
+      return res.redirect("/dashboard");
+    }
   res.render("auth/signup", { error: null });
 });
+
 app.get("/dashboard", (req, res) => {
-  res.render("dashboard");
+  if (req.isAuthenticated()) {
+    res.render("dashboard", {
+      user: req.user,
+    });
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.post("/signup", async (req, res) => {
@@ -74,41 +105,53 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/login",
+  }),
+);
 
-  try {
-    const result = await db.query("SELECT * FROM users WHERE email = $1", [
-      email,
-    ]);
-    if (result.rows.length > 0) {
-      const user = result.rows[0];
-      const storedHash = user.password;
+passport.use(
+  new Strategy(async function verify(username, password, cb) {
+    console.log(username);
 
-      bcrypt.compare(password, storedHash, function (err, isMatch) {
-        if (err) {
-          console.error("Error comparing password", err);
-          return res
-            .status(500)
-            .render("auth/login", { error: "Internal server error" });
-        } else {
-          if (isMatch) {
-            res.render("dashboard");
+    try {
+      const result = await db.query("SELECT * FROM users WHERE email = $1", [
+        username,
+      ]);
+      if (result.rows.length > 0) {
+        const user = result.rows[0];
+        const storedHash = user.password;
+
+        bcrypt.compare(password, storedHash, function (err, isMatch) {
+          if (err) {
+            return cb(err);
           } else {
-            return res.render("auth/login", {
-              error: "Incorrect email or password",
-            });
+            if (isMatch) {
+              return cb(null, user);
+            } else {
+              return cb(null, false);
+            }
           }
-        }
-      });
-    } else {
-      return res.render("auth/login", { error: "Incorrect email or password" });
+        });
+      } else {
+        return cb(null, false);
+      }
+    } catch (error) {
+      return cb(error);
+      
     }
-  } catch (error) {
-    console.log(error);
-    return res.status(500).render("login", { error: "Internal server error" });
-  }
+  }),
+);
+
+passport.serializeUser((user, cb) => {
+  cb(null, user);
+});
+
+passport.deserializeUser((user, cb) => {
+  cb(null, user);
 });
 
 app.listen(port, () => {
